@@ -21,7 +21,8 @@ class Post(models.Model):
     categories = models.ManyToManyField(Category, related_name='posts')
 
     def __str__(self):
-        return f'{self.name}: {self.description[:20]}'
+        # return f'{self.name}: {self.description[:20]}'
+        return f'{self.name}'
 
 
 class Comment(models.Model):

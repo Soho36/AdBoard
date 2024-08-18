@@ -6,7 +6,26 @@ Posts
 
 {% block content %}
 <h1>All posts</h1>
-{{ posts }}
+<hr>
+{% for post in posts %}
+<table>
+    <tr>
+        <td><strong><a href="{% url 'post_detail' post.id %}">{{ post.name }}</a></strong></td>
+    </tr>
+    <tr>
+        <td>{{ post.description }}</td>
+    </tr>
+    <tr>
+        <td>Author: {{ post.author }}</td>
+    </tr>
+    <tr>
+        <td><i>Published date: {{ post.published_date }}</i></td>
+    </tr>
+    <hr>
+{% endfor %}
+</table>
+<hr>
+<!--{{ posts }}-->
 
 {% endblock content %}
 
