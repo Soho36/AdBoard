@@ -14,7 +14,7 @@
         <td><strong><a href="{% url 'post_detail' post.pk %}">{{ post.name }}</a></strong></td>
     </tr>
     <tr>
-        <td>{{ post.description }}</td>
+        <td>{{ post.description | truncatewords:150 }}</td>
     </tr>
     <tr>
         <td>Author: {{ post.author }}</td>

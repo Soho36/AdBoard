@@ -1,11 +1,12 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from .models import Post, Category
 from django.shortcuts import get_object_or_404
+from .forms import PostForm
 
 
 class PostsList(ListView):
     model = Post
-    ordering = 'name'
+    ordering = '-published_date'
     template_name = 'post_list.html'
     context_object_name = 'posts'
 
@@ -30,3 +31,9 @@ class PostByCategory(ListView):
         # Pass the category object to the context
         context['category'] = self.category
         return context
+
+
+class PostCreate(CreateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'add_post_form.html'
