@@ -25,8 +25,13 @@ class Post(models.Model):
         # return f'{self.name}: {self.description[:20]}'
         return f'{self.name}'
 
+    # def get_absolute_url(self):
+    #     return f'/posts/{self.pk}'
+
     def get_absolute_url(self):
-        return f'/posts/{self.pk}'
+        return reverse('post_detail', kwargs={
+            'pk': self.pk
+        })
 
 
 class Comment(models.Model):

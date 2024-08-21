@@ -7,5 +7,16 @@ Post
 {% block content %}
 <h1>{{ post_detail.name }}</h1>
 <p>{{ post_detail.description }}</p>
+<hr>
+<h2>Update Your Post</h2>
+
+<a href="{% url 'post_update' pk=post_detail.pk %}">
+    <button type="button">Update</button>
+</a>
+
+<a href="{% url 'post_delete' pk=post_detail.pk %}">
+    <button type="button">Delete</button>
+</a>
+
 {% endblock content %}
 

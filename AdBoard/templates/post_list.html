@@ -6,6 +6,10 @@ Posts
 
 {% block content %}
 <h1>All posts</h1>
+<h2>Sumbit Your Post</h2>
+
+<a href="{% url 'post_create' %}"><button type="button">Submit</button>
+</a>
 <hr>
 {% for post in posts %}
 <table>
@@ -26,10 +30,6 @@ Posts
 {% endfor %}
 
 <hr>
-<h2>Sumbit Your Post</h2>
-
-<a href="{% url 'post_create' %}"><button type="button">Submit</button>
-</a>
 
 {% endblock content %}
 
