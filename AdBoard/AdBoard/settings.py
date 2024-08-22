@@ -42,7 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'fpages',
     'app',
+    'allauth',
+    'allauth.account',
 ]
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'    # Redirects to the homepage after login
+ACCOUNT_LOGOUT_REDIRECT_URL = 'after_logout'  # Redirects to the homepage after logout
+
 
 SITE_ID = 1
 
@@ -54,7 +61,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'AdBoard.urls'
@@ -73,6 +81,11 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'AdBoard.wsgi.application'

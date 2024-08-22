@@ -3,6 +3,8 @@ from .models import Post, Category
 from django.shortcuts import get_object_or_404
 from .forms import PostForm
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.shortcuts import render
 
 
 class PostsList(ListView):
@@ -12,7 +14,7 @@ class PostsList(ListView):
     context_object_name = 'posts'
 
 
-class PostDetail(DetailView):
+class PostDetail(DetailView, LoginRequiredMixin):
     model = Post
     template_name = 'post_detail.html'
     context_object_name = 'post_detail'
@@ -50,3 +52,7 @@ class PostDelete(DeleteView):
     model = Post
     template_name = 'delete_post.html'
     success_url = reverse_lazy('post_list')
+
+
+def after_logout(request):
+    return render(request, 'logout_confirmation.html')
