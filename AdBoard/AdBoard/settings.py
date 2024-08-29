@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'fpages',
-    'app',
+    'app.apps.MyAppConfig',
     'allauth',
     'allauth.account',
 ]

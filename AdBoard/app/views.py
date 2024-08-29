@@ -38,14 +38,14 @@ class PostByCategory(ListView, LoginRequiredMixin, PermissionRequiredMixin):
 
 
 class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = ('app.create_post',)
+    permission_required = ('app.add_post',)
     form_class = PostForm
     model = Post
     template_name = 'add_post_form.html'
 
 
 class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    permission_required = ('app.update_post',)
+    permission_required = ('app.change_post',)
     form_class = PostForm
     model = Post
     template_name = 'update_post_form.html'
