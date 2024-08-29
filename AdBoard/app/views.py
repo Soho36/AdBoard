@@ -14,13 +14,14 @@ class PostsList(ListView):
     context_object_name = 'posts'
 
 
-class PostDetail(DetailView, LoginRequiredMixin):
+class PostDetail(DetailView):
+    # permission_required = 'app.view_post'
     model = Post
     template_name = 'post_detail.html'
     context_object_name = 'post_detail'
 
 
-class PostByCategory(ListView):
+class PostByCategory(ListView, LoginRequiredMixin, PermissionRequiredMixin):
     template_name = 'post_by_category.html'
     context_object_name = 'post_by_category'
 
@@ -36,19 +37,22 @@ class PostByCategory(ListView):
         return context
 
 
-class PostCreate(CreateView):
+class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('app.create_post',)
     form_class = PostForm
     model = Post
     template_name = 'add_post_form.html'
 
 
-class PostUpdate(UpdateView):
+class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('app.update_post',)
     form_class = PostForm
     model = Post
     template_name = 'update_post_form.html'
 
 
-class PostDelete(DeleteView):
+class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = ('app.delete_post',)
     model = Post
     template_name = 'delete_post.html'
     success_url = reverse_lazy('post_list')
@@ -56,3 +60,4 @@ class PostDelete(DeleteView):
 
 def after_logout(request):
     return render(request, 'logout_confirmation.html')
+
