@@ -1,10 +1,11 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Category
-from django.shortcuts import get_object_or_404
+from .models import Post, Category, Comment
+from django.shortcuts import get_object_or_404, redirect
 from .forms import PostForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
+from .forms import CommentForm
 
 
 class PostsList(ListView):
@@ -15,10 +16,28 @@ class PostsList(ListView):
 
 
 class PostDetail(DetailView):
-    # permission_required = 'app.view_post'
     model = Post
     template_name = 'post_detail.html'
     context_object_name = 'post_detail'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = self.object.comments.all()
+        context['form'] = CommentForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            post = self.get_object()
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.post = post
+                comment.author = request.user
+                comment.save()
+                return redirect('post_detail', pk=post.pk)
+        else:
+            return redirect('login')  # Redirect to login if user is not authenticated
 
 
 class PostByCategory(ListView, LoginRequiredMixin, PermissionRequiredMixin):
