@@ -23,6 +23,7 @@ class PostDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['comments'] = self.object.comments.all()
+        # context['posts'] = self.object.posts.all()
         context['form'] = CommentForm()
         return context
 
@@ -79,4 +80,28 @@ class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 
 def after_logout(request):
     return render(request, 'logout_confirmation.html')
+
+
+class OwnerCommentsView(LoginRequiredMixin, ListView):
+    model = Comment
+    template_name = 'owner_comments.html'
+    context_object_name = 'comments'
+
+    def get_queryset(self):
+        # Get all posts created by the logged-in user
+        user_posts = Post.objects.filter(author=self.request.user)
+        # Get all comments related to those posts
+        return Comment.objects.filter(post__in=user_posts).order_by('-created_at')
+
+
+class OwnerPostsView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = 'owner_posts.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        # Get all posts created by the logged-in user
+        user_posts = Post.objects.filter(author=self.request.user)
+        # Get all comments related to those posts
+        return user_posts
 

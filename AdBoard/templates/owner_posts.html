@@ -1,0 +1,18 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+    <h1>Here you can find all your posts</h1>
+
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <strong>Post: </strong><a href="{% url 'post_detail' post.id %}">{{ post.name }}</a><br>
+                    <small>Posted on: {{ post.published_date }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have created no posts yet.</p>
+    {% endif %}
+{% endblock %}

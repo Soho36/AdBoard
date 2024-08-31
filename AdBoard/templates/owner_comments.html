@@ -1,0 +1,20 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+    <h1>Comments on Your Posts</h1>
+
+    {% if comments %}
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    <strong>Post: </strong><a href="{% url 'post_detail' comment.post.id %}">{{ comment.post.name }}</a><br>
+                    <strong>Comment by {{ comment.author }}:</strong> {{ comment.content }}<br>
+                    <small>Posted on {{ comment.created_at }}</small>
+                </li>
+            <p></p>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No comments on your posts yet.</p>
+    {% endif %}
+{% endblock %}

@@ -7,13 +7,17 @@ Post
 {% block content %}
 <h1>{{ post_detail.name }}</h1>
 <p>{{ post_detail.description }}</p>
+<small><strong>Posted on: </strong>{{ post_detail.published_date }}</small><br>
+<small><strong>Author: </strong>{{ post_detail.author }}</small>
 <hr>
 <h2>Comments</h2>
 {% for comment in comments %}
     <div>
+        <p>
         <strong>{{ comment.author }}</strong> says:
-        <p>{{ comment.content }}</p>
+        {{ comment.content }}<br>
         <small>Posted on {{ comment.created_at }}</small>
+        </p>
     </div>
 {% empty %}
     <p>No comments yet.</p>
