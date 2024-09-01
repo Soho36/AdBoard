@@ -22,8 +22,7 @@ class PostDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['comments'] = self.object.comments.all()
-        # context['posts'] = self.object.posts.all()
+        context['comments'] = self.object.comments.filter(is_approved=True)
         context['form'] = CommentForm()
         return context
 
@@ -83,15 +82,29 @@ def after_logout(request):
 
 
 class OwnerCommentsView(LoginRequiredMixin, ListView):
+    # model = Comment
+    # template_name = 'owner_comments.html'
+    # context_object_name = 'comments'
+    #
+    # def get_queryset(self):
+    #     # Get all posts created by the logged-in user
+    #     user_posts = Post.objects.filter(author=self.request.user)
+    #     # Get all comments related to those posts
+    #     return Comment.objects.filter(post__in=user_posts).order_by('-created_at')
     model = Comment
     template_name = 'owner_comments.html'
     context_object_name = 'comments'
 
     def get_queryset(self):
-        # Get all posts created by the logged-in user
-        user_posts = Post.objects.filter(author=self.request.user)
-        # Get all comments related to those posts
-        return Comment.objects.filter(post__in=user_posts).order_by('-created_at')
+        return Comment.objects.filter(post__author=self.request.user,
+                                      is_approved=False)  # Unapproved comments by post owner
+
+    def post(self, request, *args, **kwargs):
+        comment_id = request.POST.get('comment_id')
+        comment = get_object_or_404(Comment, id=comment_id, post__author=request.user)
+        comment.is_approved = True
+        comment.save()
+        return redirect('owner_comments')  # Redirect to the same page after approval
 
 
 class OwnerPostsView(LoginRequiredMixin, ListView):

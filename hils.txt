@@ -1,9 +1,9 @@
 * Sign in, Sign UP (email) + with verification code
 * Posts creation and modify after Sign up
 * Post (Title, text(can be images and videos inside))
-
 * Users can send comments to other posts (when comment created post owner should get an email)
 * Post owner get notification about new comment to his post
+
 * Post owner has private page where he can see all comments, accept and delete them.
 * After comment accepted its owner gets notification
 * Categories: Tanks, Hils, DD, Sellers, Gildmasters, Questgivers, Kuznets, Kozevniks, Zeljevars, Masters of magic.
