@@ -82,15 +82,6 @@ def after_logout(request):
 
 
 class OwnerCommentsView(LoginRequiredMixin, ListView):
-    # model = Comment
-    # template_name = 'owner_comments.html'
-    # context_object_name = 'comments'
-    #
-    # def get_queryset(self):
-    #     # Get all posts created by the logged-in user
-    #     user_posts = Post.objects.filter(author=self.request.user)
-    #     # Get all comments related to those posts
-    #     return Comment.objects.filter(post__in=user_posts).order_by('-created_at')
     model = Comment
     template_name = 'owner_comments.html'
     context_object_name = 'comments'
@@ -101,10 +92,16 @@ class OwnerCommentsView(LoginRequiredMixin, ListView):
 
     def post(self, request, *args, **kwargs):
         comment_id = request.POST.get('comment_id')
+        action = request.POST.get('action')
         comment = get_object_or_404(Comment, id=comment_id, post__author=request.user)
-        comment.is_approved = True
-        comment.save()
-        return redirect('owner_comments')  # Redirect to the same page after approval
+
+        if action == 'approve':
+            comment.is_approved = True
+            comment.save()
+        elif action == 'delete':
+            comment.delete()
+
+        return redirect('owner_comments')  # Redirect to the same page after action
 
 
 class OwnerPostsView(LoginRequiredMixin, ListView):
