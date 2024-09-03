@@ -1,11 +1,13 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Category, Comment
+from .models import Post, Category, Comment, Subscription
 from django.shortcuts import get_object_or_404, redirect
 from .forms import PostForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .forms import CommentForm
+from django.contrib import messages
 
 
 class PostsList(ListView):
@@ -115,3 +117,10 @@ class OwnerPostsView(LoginRequiredMixin, ListView):
         # Get all comments related to those posts
         return user_posts
 
+
+@login_required
+def subscribe_to_newsletter(request):
+    created = Subscription.objects.get_or_create(user=request.user)
+    if created:
+        messages.success(request, f'You have successfully subscribed to newsletter!')
+    return redirect('post_list')    # Redirect to the main page

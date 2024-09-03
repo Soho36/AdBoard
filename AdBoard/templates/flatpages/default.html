@@ -52,6 +52,11 @@
                    {% block content %}
                    {{ flatpage.content }}
                    {% endblock content %}
+                    <p>
+                        <a href="{% url 'subscribe_to_newsletter' %}">
+                            <button type="button">Subscribe to newsletter</button>
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>

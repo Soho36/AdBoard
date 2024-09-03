@@ -47,6 +47,27 @@ class Comment(models.Model):
         return f'Comment by {self.author} on {self.post}'
 
 
+class Newsletter(models.Model):
+    subject = models.CharField(max_length=255)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.subject
+
+
+class Subscription(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    subscribed_to_newsletter = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name_plural = "Subscriptions"
+
+    def __str__(self):
+        return self.user.username
+
+
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')

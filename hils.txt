@@ -5,7 +5,8 @@
 * Post owner get notification about new comment to his post
 * Post owner has private page where he can see all comments, accept and delete them.
 * After comment accepted its owner gets notification
+* Newsletters to users.
 
 * Post (Title, text(can be images and videos inside))
-* Newsletters to users.
+
 
