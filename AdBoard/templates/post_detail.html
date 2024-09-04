@@ -6,7 +6,7 @@ Post
 
 {% block content %}
 <h1>{{ post_detail.name }}</h1>
-<p>{{ post_detail.description }}</p>
+<p>{{ post_detail.description|safe }}</p>
 <small><strong>Posted on: </strong>{{ post_detail.published_date }}</small><br>
 <small><strong>Author: </strong>{{ post_detail.author }}</small>
 <hr>

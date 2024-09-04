@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
 from model_utils import FieldTracker
+from django_ckeditor_5.fields import CKEditor5Field
 
 
 class Category(models.Model):
@@ -17,7 +18,7 @@ class Category(models.Model):
 
 class Post(models.Model):
     name = models.CharField(max_length=150, unique=True)
-    description = models.TextField()
+    description = CKEditor5Field('Text', config_name='extends')
     published_date = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     categories = models.ManyToManyField(Category, related_name='posts')
