@@ -8,6 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .forms import CommentForm
 from django.contrib import messages
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class PostsList(ListView):
@@ -63,6 +66,17 @@ class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'add_post_form.html'
+    success_url = reverse_lazy('post_list')
+
+    #   Override the form_valid method in order to display messages after post creation
+    def form_valid(self, form):
+        try:
+            response = super().form_valid(form)
+            messages.success(self.request, 'Your post has been successfully created!')
+            return response
+        except Exception as e:
+            messages.error(self.request, f'An error occurred while trying create post. Try again later')
+            return self.form_invalid(form)  # Handle the form as invalid if an error occurs
 
 
 class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -70,6 +84,16 @@ class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'update_post_form.html'
+    success_url = reverse_lazy('post_list')
+
+    def form_valid(self, form):
+        try:
+            response = super().form_valid(form)
+            messages.success(self.request, 'Your post has been successfully updated!')
+            return response
+        except Exception as e:
+            messages.error(self.request, f'An error occurred while trying update post. Try again later')
+            return self.form_invalid(form)  # Handle the form as invalid if an error occurs
 
 
 class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
@@ -78,6 +102,23 @@ class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     template_name = 'delete_post.html'
     success_url = reverse_lazy('post_list')
 
+    #   Override the delete method to display messages of successful deletion
+    def form_valid(self, form):
+        try:
+            logger.debug("Delete method called")
+            response = super().form_valid(form)
+            messages.success(self.request, 'Your post has been successfully deleted!')
+            return response
+        except Exception as e:
+            logger.error(f"Error occurred: {e}")
+            messages.error(self.request, 'An error occurred while trying to delete the post. Please try again later.')
+            return self.form_invalid(form)  # Redirect to the post list even if deletion fails
+
+    def form_invalid(self, form):
+        """
+        Handle the case when form is invalid.
+        """
+        return super().form_invalid(form)
 
 def after_logout(request):
     return render(request, 'logout_confirmation.html')
@@ -100,8 +141,13 @@ class OwnerCommentsView(LoginRequiredMixin, ListView):
         if action == 'approve':
             comment.is_approved = True
             comment.save()
+            messages.success(request, f'You have successfully approved {comment.author} comment!')
         elif action == 'delete':
-            comment.delete()
+            try:
+                comment.delete()
+                messages.info(request, f'You have successfully deleted {comment.author} comment')
+            except Exception as e:
+                messages.error(request, f'An error occurred while trying to delete the comment. Try again later')
 
         return redirect('owner_comments')  # Redirect to the same page after action
 
@@ -120,7 +166,9 @@ class OwnerPostsView(LoginRequiredMixin, ListView):
 
 @login_required
 def subscribe_to_newsletter(request):
-    created = Subscription.objects.get_or_create(user=request.user)
+    subscription, created = Subscription.objects.get_or_create(user=request.user)
     if created:
         messages.success(request, f'You have successfully subscribed to newsletter!')
+    else:
+        messages.info(request, 'You are already subscribed to the newsletter.')
     return redirect('post_list')    # Redirect to the main page
