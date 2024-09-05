@@ -9,13 +9,18 @@ from django.conf import settings
 @receiver(post_save, sender=User)
 def add_user_to_group(sender, instance, created, **kwargs):
     if created:
-        group_name = 'Registered'   # Group created in admin panel
-        group, created = Group.objects.get_or_create(name=group_name)
-        instance.groups.add(group)
+        group_names = ['Registered', 'Basic']   # Group created in admin panel
+
+        for group_name in group_names:
+            group, _ = Group.objects.get_or_create(name=group_name)
+            instance.groups.add(group)
 
 
 @receiver(post_save, sender=Comment)
 def notify_post_owner(sender, instance, created, **kwargs):
+    """
+    Sends an email notification to the post author when post get commented.
+    """
     if created:
         post = instance.post
         author_email = post.author.email  # Assuming `author` is a User object with an email field

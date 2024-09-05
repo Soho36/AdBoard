@@ -32,17 +32,30 @@ class PostDetail(DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
+
         if request.user.is_authenticated:
             post = self.get_object()
             form = CommentForm(request.POST)
+
             if form.is_valid():
                 comment = form.save(commit=False)
                 comment.post = post
                 comment.author = request.user
-                comment.save()
+                try:
+                    comment.save()
+                    messages.success(self.request, 'Your comment has been successfully submitted for approval!')
+                    return redirect('post_detail', pk=post.pk)
+
+                except Exception as e:
+                    print(e)
+                    messages.warning(self.request, 'Comment submitted but a notification could not be sent.')
                 return redirect('post_detail', pk=post.pk)
+
+            else:
+                return redirect('login')  # Redirect to login if user is not authenticated
+
         else:
-            return redirect('login')  # Redirect to login if user is not authenticated
+            messages.error(self.request, 'There was an error with your comment. Please try again.')
 
 
 class PostByCategory(ListView, LoginRequiredMixin, PermissionRequiredMixin):
@@ -71,10 +84,13 @@ class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     #   Override the form_valid method in order to display messages after post creation
     def form_valid(self, form):
         try:
+            form.instance.author = self.request.user
             response = super().form_valid(form)
             messages.success(self.request, 'Your post has been successfully created!')
             return response
+
         except Exception as e:
+            print(e)
             messages.error(self.request, f'An error occurred while trying create post. Try again later')
             return self.form_invalid(form)  # Handle the form as invalid if an error occurs
 
@@ -119,6 +135,7 @@ class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         Handle the case when form is invalid.
         """
         return super().form_invalid(form)
+
 
 def after_logout(request):
     return render(request, 'logout_confirmation.html')

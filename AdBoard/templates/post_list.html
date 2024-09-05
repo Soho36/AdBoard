@@ -13,13 +13,13 @@ Posts
 {% for post in posts %}
 <table>
     <tr>
-        <td><strong><a href="{% url 'post_detail' post.id %}">{{ post.name }}</a></strong></td>
+        <td><h1><strong><a href="{% url 'post_detail' post.id %}">{{ post.name }}</a></strong></h1></td>
     </tr>
     <tr>
-        <td>{{ post.description | truncatewords:150 }}</td>
+        <td>{{ post.description | truncatewords:150 | safe}}</td>
     </tr>
     <tr>
-        <td>Author: {{ post.author }}</td>
+        <td><strong>Author: </strong>{{ post.author }}</td>
     </tr>
     <tr>
         <td><i>Published date: {{ post.published_date }}</i></td>

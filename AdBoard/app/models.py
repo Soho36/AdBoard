@@ -20,7 +20,7 @@ class Post(models.Model):
     name = models.CharField(max_length=150, unique=True)
     description = CKEditor5Field('Text', config_name='extends')
     published_date = models.DateTimeField(default=timezone.now)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', editable=False)
     categories = models.ManyToManyField(Category, related_name='posts')
 
     def __str__(self):
